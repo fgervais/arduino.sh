@@ -23,17 +23,17 @@
 class Command
 {
 public:
-  Command(String name, uint8_t (*function)(void *data)) {
+  Command(String name, uint8_t (*function)(String pameters)) {
     this->name = name;
     this->function = function;
     next = NULL;
   };
   String getName() { return name; };
-  void run(void *parameters) { function(parameters); };
+  void run(String parameters) { function(parameters); };
   Command *next;
 private:
   String name;
-  uint8_t (*function)(void *parameters);
+  uint8_t (*function)(String parameters);
 };
 
 class Shell
@@ -49,6 +49,7 @@ private:
   void prompt();
   String readCommandString();
   Command * getCommand(String commandString);
+  String getParameters(Command *command, String commandString);
 };
 
 #endif

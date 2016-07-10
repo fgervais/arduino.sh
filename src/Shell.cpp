@@ -44,13 +44,16 @@ void Shell::run()
 {
   String commandString;
   Command *command;
+  String parameters;
 
   while(1) {
     prompt();
     commandString = readCommandString();
     command = getCommand(commandString);
+    parameters = getParameters(command, commandString);
+
     if(command != NULL)
-      command->run(NULL);
+      command->run(parameters);
     Serial.print('\n');
   }
 }
@@ -69,7 +72,6 @@ String Shell::readCommandString()
   while(buf_index < MAX_CMD_STR_LEN-1) {
     if (Serial.available() > 0) {
       c = Serial.read();
-      //Serial.print(c, DEC);
       /* backspace */
       if(c == '\b' || c == 127) {
         if(buf_index > 0) {
@@ -101,4 +103,12 @@ Command * Shell::getCommand(String commandString)
     c = c->next;
   }
   return NULL;
+}
+
+String Shell::getParameters(Command *command, String commandString)
+{
+  String parameters = commandString;
+  parameters.remove(0, command->getName().length());
+  parameters.trim();
+  return parameters;
 }
